@@ -1,0 +1,23 @@
+# Sistema operacional
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Variáveis de ambiente (caso alguém crie um na raiz por engano)
+.env
+.env.local
+
+# Logs gerais
+*.log
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Dependências (caso algo seja instalado na raiz por engano)
+node_modules/
