@@ -1,4 +1,26 @@
+# Dependências
 node_modules
+
+# Variáveis de ambiente
 .env
+.env.local
+.env.*.local
+
+# Logs
 *.log
+npm-debug.log*
+
+# Credenciais
 serviceAccountKey.json
+
+# Build
+dist
+build
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
