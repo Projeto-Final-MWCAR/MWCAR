@@ -97,3 +97,37 @@ Este documento pode ser copiado direto para o **README** do repositório ou queb
 - **Pessoa 4 (ou rotativo):** Sprint 3 (catálogo dinâmico) + Sprint 5 (integração/deploy)
 
 > Dica: cada linha da tabela pode virar uma **Issue** no GitHub, com o Sprint como **Milestone**. Assim dá pra acompanhar o progresso pelo board automaticamente.
+
+---
+
+## Modelagem do Firestore
+
+### Coleção `cars`
+
+Catálogo de carros da loja, exposto publicamente para leitura (`GET /api/cars`) e editável só por admin autenticado.
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `model` | string | Modelo do carro (obrigatório) |
+| `brand` | string | Marca (obrigatório) |
+| `year` | number | Ano do carro (obrigatório) |
+| `price` | number | Preço (obrigatório) |
+| `description` | string | Descrição livre do carro |
+| `images` | string[] | URLs das imagens (hospedadas no Cloudinary) |
+| `status` | `"ativo"` \| `"inativo"` | Se o carro aparece no catálogo público |
+| `createdAt` | string (ISO 8601) | Data de criação |
+| `updatedAt` | string (ISO 8601) | Data da última edição |
+
+### Coleção `users`
+
+Perfil complementar dos admins. O login em si (email/senha) fica no **Firebase Authentication** — esta coleção guarda dados extras vinculados ao mesmo UID do Auth. O ID do documento é sempre igual ao `uid` do usuário autenticado.
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `uid` | string | UID do Firebase Authentication (= ID do documento) |
+| `email` | string | E-mail do admin |
+| `name` | string | Nome do admin |
+| `role` | `"admin"` | Papel do usuário (hoje só existe admin) |
+| `createdAt` | string (ISO 8601) | Data de criação do perfil |
+
+Regras de segurança completas em [`firestore.rules`](./firestore.rules): leitura de `cars` é pública, escrita exige autenticação; `users` só pode ser lido/escrito pelo próprio dono do UID.

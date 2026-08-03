@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import carsRouter from "./routes/cars.js";
 import uploadRouter from "./routes/upload.js";
+import usersRouter from "./routes/users.js";
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/cars", carsRouter);
 app.use("/api/upload", uploadRouter);
+app.use("/api/users", usersRouter);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

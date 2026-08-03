@@ -31,18 +31,21 @@ router.get("/:id", async (req, res) => {
 // POST /api/cars - admin autenticado cria carro
 router.post("/", requireAuth, async (req, res) => {
   try {
-    const { model, brand, year, price, imageUrl, description } = req.body;
+    const { model, brand, year, price, images, description, status } = req.body;
     if (!model || !brand || !year || !price) {
       return res.status(400).json({ error: "Campos obrigatórios: model, brand, year, price" });
     }
+    const now = new Date().toISOString();
     const docRef = await db.collection("cars").add({
       model,
       brand,
       year,
       price,
-      imageUrl: imageUrl || null,
+      images: Array.isArray(images) ? images : [],
       description: description || "",
-      createdAt: new Date().toISOString(),
+      status: status === "inativo" ? "inativo" : "ativo",
+      createdAt: now,
+      updatedAt: now,
     });
     res.status(201).json({ id: docRef.id });
   } catch (err) {
@@ -54,7 +57,7 @@ router.post("/", requireAuth, async (req, res) => {
 router.put("/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
-    const updates = req.body;
+    const updates = { ...req.body, updatedAt: new Date().toISOString() };
     await db.collection("cars").doc(id).update(updates);
     res.json({ message: "Carro atualizado" });
   } catch (err) {
