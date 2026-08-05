@@ -1,5 +1,6 @@
 # Cronograma de Desenvolvimento — MWCar
 
+# Link Figma: https://www.figma.com/make/V7uJXkS5cSGnmhyQDV5v97/Site-completo-para-MWCar?t=esZzf3N2eqij9qaw-1
 **Stack:** React (Front-end) · Node.js/JavaScript (Back-end) · Firebase (Auth + Firestore + Storage)
 
 Este documento pode ser copiado direto para o **README** do repositório ou quebrado em **Issues/Project Board** no GitHub (recomendo criar um board com colunas: `Backlog`, `Em progresso`, `Em revisão`, `Concluído`).
