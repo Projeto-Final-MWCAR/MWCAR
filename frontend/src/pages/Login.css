@@ -156,6 +156,10 @@
   color: #b0b0b0;
 }
 
+.login-input-error {
+  border-color: #e6392f;
+}
+
 /* ===== Responsividade ===== */
 
 @media (max-width: 600px) {
