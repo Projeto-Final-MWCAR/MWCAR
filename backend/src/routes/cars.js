@@ -4,7 +4,6 @@ import { requireAuth } from "../middleware/auth.js";
 
 const router = Router();
 
-// GET /api/cars - lista pública do catálogo
 router.get("/", async (req, res) => {
   try {
     const snapshot = await db.collection("cars").get();
@@ -15,7 +14,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/cars/:id
 router.get("/:id", async (req, res) => {
   try {
     const doc = await db.collection("cars").doc(req.params.id).get();
@@ -28,7 +26,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST /api/cars - admin autenticado cria carro
 router.post("/", requireAuth, async (req, res) => {
   try {
     const { model, brand, year, price, images, description, status } = req.body;
@@ -53,7 +50,6 @@ router.post("/", requireAuth, async (req, res) => {
   }
 });
 
-// PUT /api/cars/:id - admin autenticado edita carro
 router.put("/:id", requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
@@ -65,7 +61,6 @@ router.put("/:id", requireAuth, async (req, res) => {
   }
 });
 
-// DELETE /api/cars/:id - admin autenticado remove carro
 router.delete("/:id", requireAuth, async (req, res) => {
   try {
     await db.collection("cars").doc(req.params.id).delete();
