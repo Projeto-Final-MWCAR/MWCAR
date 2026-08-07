@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { useState } from "react";
 import "./Admin.css";
 
 const MOCK_VEHICLES = [
@@ -24,6 +25,25 @@ export default function Admin() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  const [vehicles, setVehicles] = useState(MOCK_VEHICLES);
+
+  const [vehicleToDelete, setVehicleToDelete] = useState(null);
+
+  function openDeleteModal(vehicle) {
+    setVehicleToDelete(vehicle);
+  }
+
+  function closeDeleteModal() {
+    setVehicleToDelete(null);
+  }
+
+  function confirmDelete() {
+    setVehicles((prevVehicles) =>
+      prevVehicles.filter((v) => v.id !== vehicleToDelete.id)
+    );
+    setVehicleToDelete(null);
+  }
+
   async function handleLogout() {
     await logout();
     navigate("/login");
@@ -33,7 +53,7 @@ export default function Admin() {
     <div className="admin-layout">
       <aside className="admin-sidebar">
         <div className="admin-brand">
-          
+
             <img className="admin-brand-logo" src="/logo.png" alt="MWW Logo" />
 
           <span className="admin-brand-label">PAINEL ADMIN</span>
@@ -55,7 +75,7 @@ export default function Admin() {
           <div>
             <h1 className="admin-title">VEÍCULOS</h1>
             <p className="admin-subtitle">
-              {MOCK_VEHICLES.length} veículos cadastrados
+              {vehicles.length} veículos cadastrados
             </p>
           </div>
           <button className="admin-add-button">+ ADICIONAR CARRO</button>
@@ -74,7 +94,7 @@ export default function Admin() {
               </tr>
             </thead>
             <tbody>
-              {MOCK_VEHICLES.map((vehicle) => (
+              {vehicles.map((vehicle) => (
                 <tr key={vehicle.id}>
                   <td>
                     <div className="admin-vehicle-cell">
@@ -93,7 +113,9 @@ export default function Admin() {
                   <td>
                     <div className="admin-actions">
                       <button className="admin-btn-edit">Editar</button>
-                      <button className="admin-btn-delete">Excluir</button>
+                      <button className="admin-btn-delete" onClick={() => openDeleteModal(vehicle)}>
+                        Excluir
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -102,6 +124,27 @@ export default function Admin() {
           </table>
         </div>
       </main>
+      {vehicleToDelete && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <div className="modal-icon">!</div>
+            <h2 className="modal-title">EXCLUIR VEÍCULO</h2>
+            <p className="modal-text">
+              Tem certeza que deseja excluir{" "}
+              <strong>{vehicleToDelete.name}</strong>? Esta ação não pode ser
+              desfeita.
+            </p>
+            <div className="modal-actions">
+              <button className="modal-btn-cancel" onClick={closeDeleteModal}>
+                Cancelar
+              </button>
+              <button className="modal-btn-confirm" onClick={confirmDelete}>
+                EXCLUIR
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
