@@ -3,29 +3,47 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import "../pages/Login.css"
 
+const ERROR_MESSAGES = {
+  "auth/invalid-credential": "E-mail ou senha incorretos.",
+  "auth/user-disabled": "Este usuário foi desativado.",
+  "auth/too-many-requests": "Muitas tentativas. Tente novamente mais tarde.",
+  "auth/network-request-failed": "Falha de conexão. Verifique sua internet.",
+};
+
+function getErrorMessage(code) {
+  return ERROR_MESSAGES[code] || "Erro ao fazer login. Tente novamente.";
+}
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [fieldError, setFieldError] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
   async function handleSubmit(e) { 
     e.preventDefault();
     setError("");
+    setFieldError(false);
     try {
       await login(email, password);
       navigate("/admin");
     } catch (err) {
-      if (err.code === "auth/invalid-credential") {
-        setError("E-mail ou senha incorretos.");
-      } else if (err.code === "auth/user-not-found") {
-        setError("Usuário não encontrado.");
-      } else {
-        setError("Erro ao fazer login. Tente novamente.");
-      }
+      setError(getErrorMessage(err.code));
+      setFieldError(true);
     }
-  } 
+  }
+  
+  function handleEmailChange(e) {
+    setEmail(e.target.value);
+    if (fieldError) setFieldError(false);
+  }
+
+  function handlePasswordChange(e) {
+    setPassword(e.target.value);
+    if (fieldError) setFieldError(false);
+  }
 
   return (
     <div className="login-page">
@@ -46,14 +64,14 @@ export default function Login() {
         )}
 
         <form className="login-form" onSubmit={handleSubmit}>
-          <label className="login-label" htmlFor="usuario">
-            USUÁRIO
+          <label className="login-label" htmlFor="email">
+            E-MAIL
           </label>
           <input
-            id="usuario"
+            id="email"
             className="login-input"
             type="email"
-            placeholder="usuário"
+            placeholder="E-MAIL"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
