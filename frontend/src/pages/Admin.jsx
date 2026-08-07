@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./Admin.css";
 
 const MOCK_VEHICLES = [
@@ -25,9 +25,35 @@ export default function Admin() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const [vehicles, setVehicles] = useState(MOCK_VEHICLES);
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const [vehicleToDelete, setVehicleToDelete] = useState(null);
+
+  useEffect(() => {
+    fetchVehicles();
+  }, []);
+
+  async function fetchVehicles() {
+    setLoading(true);
+    setError("");
+    try {
+      // Codigo provisório, depois trocar quando conectar com a API
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      setVehicles(MOCK_VEHICLES);
+
+      //  // Quando a API estiver pronta, troque o bloco acima por:
+      // const response = await fetch("/api/veiculos");
+      // if (!response.ok) throw new Error("Falha ao buscar veículos");
+      // const data = await response.json();
+      // setVehicles(data);
+    } catch (err) {
+      setError("Não foi possível carregar os veículos. Verifique sua conexão e tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   function openDeleteModal(vehicle) {
     setVehicleToDelete(vehicle);
@@ -53,9 +79,7 @@ export default function Admin() {
     <div className="admin-layout">
       <aside className="admin-sidebar">
         <div className="admin-brand">
-
             <img className="admin-brand-logo" src="/logo.png" alt="MWW Logo" />
-
           <span className="admin-brand-label">PAINEL ADMIN</span>
         </div>
 
@@ -75,12 +99,33 @@ export default function Admin() {
           <div>
             <h1 className="admin-title">VEÍCULOS</h1>
             <p className="admin-subtitle">
-              {vehicles.length} veículos cadastrados
+              {loading ? "Carregando..." : `${vehicles.length} veículos cadastrados`}
             </p>
           </div>
           <button className="admin-add-button">+ ADICIONAR CARRO</button>
         </header>
 
+        {error && !loading && (
+          <div className="admin-error-box" role="alert">
+            <span>{error}</span>
+            <button onClick={fetchVehicles} className="admin-retry-button">
+              Tentar novamente
+            </button>
+          </div>
+        )}
+
+        {loading && (
+          <div className="admin-spinner-box">
+            <div className="admin-spinner" />
+            <span>Carregando veículos...</span>
+          </div>
+        )}
+
+        {!loading && !error && vehicles.length === 0 && (
+          <div className="admin-empty-box">Nenhum veículo cadastrado ainda.</div>
+        )}
+
+        {!loading && !error && vehicles.length > 0 &&  (
         <div className="admin-table-wrapper">
           <table className="admin-table">
             <thead>
@@ -123,7 +168,9 @@ export default function Admin() {
             </tbody>
           </table>
         </div>
+        )}
       </main>
+
       {vehicleToDelete && (
         <div className="modal-overlay">
           <div className="modal-box">
