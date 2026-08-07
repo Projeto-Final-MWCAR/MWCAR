@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import "../pages/Login.css"
+import "../pages/Login.css";
+import logo from "/logo.png";
 
 const ERROR_MESSAGES = {
   "auth/invalid-credential": "E-mail ou senha incorretos.",
@@ -48,10 +49,12 @@ export default function Login() {
   return (
     <div className="login-page">
       <div className="login-card">
-        <div className="login-logo">
+        {/* <div className="login-logo">
           <span className="login-logo-mark">MWW</span>
           <span className="login-logo-sub">CAR</span>
-        </div>
+        </div> */}
+
+        <img className="login-logo" src={logo} alt="MWCAR" />
 
         <div className="login-divider" />
 

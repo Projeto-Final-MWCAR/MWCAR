@@ -46,21 +46,6 @@
   margin-bottom: 24px;
 }
 
-.login-logo-mark {
-  font-family: "Anton", sans-serif;
-  font-size: 15px;
-  letter-spacing: 1px;
-  color: #f2f2f2;
-}
-
-.login-logo-sub {
-  font-family: "Anton", sans-serif;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: #e6392f;
-  margin-top: 2px;
-}
-
 .login-divider {
   width: 32px;
   height: 3px;
