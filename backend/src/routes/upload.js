@@ -4,8 +4,6 @@ import { requireAuth } from "../middleware/auth.js";
 
 const router = Router();
 
-// GET /api/upload/signature - gera assinatura para o admin autenticado
-// fazer upload direto pro Cloudinary a partir do frontend
 router.get("/signature", requireAuth, (req, res) => {
   const timestamp = Math.round(Date.now() / 1000);
   const folder = "mwcar/cars";
