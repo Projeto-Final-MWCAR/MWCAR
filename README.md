@@ -116,7 +116,7 @@ Catálogo de carros da loja, exposto publicamente para leitura (`GET /api/cars`)
 | `price` | number | Preço (obrigatório) |
 | `description` | string | Descrição livre do carro |
 | `images` | string[] | URLs das imagens (hospedadas no Cloudinary) |
-| `status` | `"ativo"` \| `"inativo"` | Se o carro aparece no catálogo público |
+| `status` | `"disponivel"` \| `"reservado"` | Situação de venda do carro |
 | `createdAt` | string (ISO 8601) | Data de criação |
 | `updatedAt` | string (ISO 8601) | Data da última edição |
 

@@ -26,6 +26,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+const VALID_STATUS = ["disponivel", "reservado"];
+
 router.post("/", requireAuth, async (req, res) => {
   try {
     const { model, brand, year, price, images, description, status } = req.body;
@@ -40,7 +42,7 @@ router.post("/", requireAuth, async (req, res) => {
       price,
       images: Array.isArray(images) ? images : [],
       description: description || "",
-      status: status === "inativo" ? "inativo" : "ativo",
+      status: VALID_STATUS.includes(status) ? status : "disponivel",
       createdAt: now,
       updatedAt: now,
     });
