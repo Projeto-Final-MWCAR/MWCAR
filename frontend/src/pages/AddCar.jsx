@@ -13,7 +13,7 @@ export function AddCar() {
   const [year, setYear] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState("ativo");
+  const [status, setStatus] = useState("disponivel");
   const [files, setFiles] = useState([]);
 
   const [loading, setLoading] = useState(false);
@@ -152,8 +152,8 @@ export function AddCar() {
       />
 
       <select value={status} onChange={(e) => setStatus(e.target.value)}>
-        <option value="ativo">Ativo</option>
-        <option value="inativo">Inativo</option>
+        <option value="disponivel">Disponível</option>
+        <option value="reservado">Reservado</option>
       </select>
 
       <input
