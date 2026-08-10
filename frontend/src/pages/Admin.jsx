@@ -21,7 +21,7 @@ const STATUS_LABELS = {
   reservado: "RESERVADO",
 };
 
-export default function Admin() {
+export function Admin() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -102,7 +102,13 @@ export default function Admin() {
               {loading ? "Carregando..." : `${vehicles.length} veículos cadastrados`}
             </p>
           </div>
-          <button className="admin-add-button">+ ADICIONAR CARRO</button>
+          <button
+            type="button"
+            className="admin-add-button"
+            onClick={() => navigate("/admin/add-car")}
+          >
+            + ADICIONAR CARRO
+          </button>
         </header>
 
         {error && !loading && (
