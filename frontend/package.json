@@ -9,12 +9,14 @@
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "format": "prettier --write .",
-      "preview": "vite preview"
+    "preview": "vite preview"
   },
   "dependencies": {
     "firebase": "^12.17.0",
+    "lucide-react": "^1.28.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "react-icons": "^5.7.0",
     "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
