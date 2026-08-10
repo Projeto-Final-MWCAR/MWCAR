@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
+import { AddCar } from "./pages/AddCar";
 
 export default function App() {
   return (
@@ -15,7 +16,16 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/admin/add-car"
+        element={
+          <ProtectedRoute>
+            <AddCar />
+          </ProtectedRoute>
+        }
+      />
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 }
+
