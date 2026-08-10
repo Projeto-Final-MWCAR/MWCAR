@@ -105,7 +105,13 @@ export function Admin() {
               {loading ? "Carregando..." : `${vehicles.length} veículos cadastrados`}
             </p>
           </div>
-          <button className="admin-add-button">+ ADICIONAR CARRO</button>
+          <button
+            type="button"
+            className="admin-add-button"
+            onClick={() => navigate("/admin/add-car")}
+          >
+            + ADICIONAR CARRO
+          </button>
         </header>
 
         {error && !loading && (
