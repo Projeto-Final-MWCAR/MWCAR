@@ -87,9 +87,6 @@ export function Admin() {
           <button className="admin-nav-item admin-nav-item-active">
             Veículos
           </button>
-          <a className="admin-nav-item" href="/admin/add-car">
-            Adicionar Carro
-          </a>
         </nav>
 
         <button className="admin-logout" onClick={handleLogout}>
