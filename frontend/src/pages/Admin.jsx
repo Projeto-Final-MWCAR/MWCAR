@@ -21,7 +21,7 @@ const STATUS_LABELS = {
   reservado: "RESERVADO",
 };
 
-export function Admin() {
+export default function Admin() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -51,7 +51,7 @@ export function Admin() {
     } catch (err) {
       setError("Não foi possível carregar os veículos. Verifique sua conexão e tente novamente.");
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   }
 
@@ -73,6 +73,14 @@ export function Admin() {
   async function handleLogout() {
     await logout();
     navigate("/login");
+  }
+
+  function handleAddCar() {
+    navigate("/admin/cadastrar-carro");
+  }
+
+  function handleEditarCarro() {
+    navigate(`/admin/editar-carro/${MOCK_VEHICLES.id}`);
   }
 
   return (
@@ -102,11 +110,7 @@ export function Admin() {
               {loading ? "Carregando..." : `${vehicles.length} veículos cadastrados`}
             </p>
           </div>
-          <button
-            type="button"
-            className="admin-add-button"
-            onClick={() => navigate("/admin/add-car")}
-          >
+          <button className="admin-add-button" onClick={handleAddCar}>
             + ADICIONAR CARRO
           </button>
         </header>
@@ -163,7 +167,9 @@ export function Admin() {
                   </td>
                   <td>
                     <div className="admin-actions">
-                      <button className="admin-btn-edit">Editar</button>
+                      <button className="admin-btn-edit" onClick={handleEditarCarro}>
+                        Editar
+                      </button>
                       <button className="admin-btn-delete" onClick={() => openDeleteModal(vehicle)}>
                         Excluir
                       </button>
