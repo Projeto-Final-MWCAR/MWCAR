@@ -34,10 +34,6 @@ export default function Navbar() {
           <a href="#contato">Contato</a>
         </nav>
 
-        <a href="/login" className="login-btn">
-          Login
-        </a>
-
         <button
           className="menu-btn"
           onClick={() => setMenuOpen(!menuOpen)}

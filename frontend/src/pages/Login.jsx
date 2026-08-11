@@ -15,7 +15,7 @@ function getErrorMessage(code) {
   return ERROR_MESSAGES[code] || "Erro ao fazer login. Tente novamente.";
 }
 
-export default function Login() {
+export function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -23,7 +23,7 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  async function handleSubmit(e) { 
+  async function handleSubmit(e) {
     e.preventDefault();
     setError("");
     setFieldError(false);
@@ -35,7 +35,7 @@ export default function Login() {
       setFieldError(true);
     }
   }
-  
+
   function handleEmailChange(e) {
     setEmail(e.target.value);
     if (fieldError) setFieldError(false);
@@ -104,5 +104,5 @@ export default function Login() {
         ← Voltar ao site
       </a>
     </div>
-  )  
+  );
 }
