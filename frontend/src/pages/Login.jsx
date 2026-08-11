@@ -15,7 +15,7 @@ function getErrorMessage(code) {
   return ERROR_MESSAGES[code] || "Erro ao fazer login. Tente novamente.";
 }
 
-export function Login() {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");

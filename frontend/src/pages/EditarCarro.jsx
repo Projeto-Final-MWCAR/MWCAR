@@ -1,6 +1,9 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
 import "./EditarCarro.css";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const SERIES_ITEMS = [
   "Airbag",
@@ -54,30 +57,10 @@ const EMPTY_FORM_DATA = {
   descricao: "",
 };
 
-// Codigo provisório, depois trocar quando conectar com a API.
-// Simula o retorno de GET /api/veiculos/:id
-const MOCK_VEHICLE = {
-  placa: "ABC1D23",
-  marca: "BMW",
-  modelo: "Série 3 330i",
-  ano: "2023",
-  combustivel: "Gasolina",
-  tipoVeiculo: "Sedan",
-  potencia: "258 cv",
-  direcao: "Elétrica",
-  cor: "Branco",
-  preco: "289900",
-  status: "disponivel",
-  aceitaTrocas: false,
-  descricao: "",
-  itensSerie: ["Airbag", "Ar Condicionado", "Bancos de Couro"],
-  informacoesAdicionais: ["Único dono", "IPVA pago"],
-  fotos: [], // URLs de fotos já cadastradas, ex: ["/uploads/carro1.jpg"]
-};
-
 export default function EditarCarro() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState(EMPTY_FORM_DATA);
   const [selectedSeriesItems, setSelectedSeriesItems] = useState(new Set());
@@ -97,14 +80,9 @@ export default function EditarCarro() {
     setLoading(true);
     setError("");
     try {
-      // Codigo provisório, depois trocar quando conectar com a API
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      const vehicle = MOCK_VEHICLE;
-
-      // Quando a API estiver pronta, troque o bloco acima por:
-      // const response = await fetch(`/api/veiculos/${id}`);
-      // if (!response.ok) throw new Error("Veículo não encontrado");
-      // const vehicle = await response.json();
+      const response = await fetch(`${API_URL}/api/cars/${id}`);
+      if (!response.ok) throw new Error("Veículo não encontrado");
+      const vehicle = await response.json();
 
       setFormData({
         placa: vehicle.placa ?? "",
@@ -126,7 +104,7 @@ export default function EditarCarro() {
       setSelectedAdditionalItems(new Set(vehicle.informacoesAdicionais ?? []));
 
       // Fotos que já existiam no cadastro (vêm como URL, não como File)
-      const existingPhotos = (vehicle.fotos ?? []).map((url) => ({
+      const existingPhotos = (vehicle.images ?? []).map((url) => ({
         id: url,
         preview: url,
         url,
@@ -202,6 +180,29 @@ export default function EditarCarro() {
     navigate("/admin");
   }
 
+  async function uploadImage(file, signatureData) {
+    const { timestamp, signature, folder, apiKey, cloudName } = signatureData;
+
+    const uploadData = new FormData();
+    uploadData.append("file", file);
+    uploadData.append("api_key", apiKey);
+    uploadData.append("timestamp", timestamp);
+    uploadData.append("signature", signature);
+    uploadData.append("folder", folder);
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+      { method: "POST", body: uploadData }
+    );
+
+    if (!res.ok) {
+      throw new Error("Falha ao enviar imagem para o Cloudinary");
+    }
+
+    const data = await res.json();
+    return data.secure_url;
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setSaving(true);
@@ -212,26 +213,41 @@ export default function EditarCarro() {
       .filter((p) => p.isExisting)
       .map((p) => p.url);
 
-    const payload = {
-      ...formData,
-      itensSerie: Array.from(selectedSeriesItems),
-      informacoesAdicionais: Array.from(selectedAdditionalItems),
-      fotosExistentes: remainingExistingUrls,
-      fotosRemovidas: Array.from(removedExistingPhotoUrls),
-      fotosNovas: newPhotoFiles,
-    };
-
     try {
-      // Codigo provisório, depois trocar quando conectar com a API
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      console.log("Veículo a ser atualizado:", id, payload);
+      const idToken = await user.getIdToken();
 
-      // Quando a API estiver pronta, troque o bloco acima por:
-      // const response = await fetch(`/api/veiculos/${id}`, {
-      //   method: "PUT",
-      //   body: buildFormData(payload),
-      // });
-      // if (!response.ok) throw new Error("Falha ao atualizar veículo");
+      let newImageUrls = [];
+      if (newPhotoFiles.length > 0) {
+        const sigRes = await fetch(`${API_URL}/api/upload/signature`, {
+          headers: { Authorization: `Bearer ${idToken}` },
+        });
+        if (!sigRes.ok) {
+          throw new Error("Não foi possível gerar a assinatura de upload");
+        }
+        const signatureData = await sigRes.json();
+
+        newImageUrls = await Promise.all(
+          newPhotoFiles.map((file) => uploadImage(file, signatureData))
+        );
+      }
+
+      const carRes = await fetch(`${API_URL}/api/cars/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          ...formData,
+          images: [...remainingExistingUrls, ...newImageUrls],
+          itensSerie: Array.from(selectedSeriesItems),
+          informacoesAdicionais: Array.from(selectedAdditionalItems),
+        }),
+      });
+
+      if (!carRes.ok) {
+        throw new Error("Falha ao atualizar veículo");
+      }
 
       navigate("/admin");
     } catch (err) {

@@ -1,6 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../hooks/useAuth";
 import "./AddCar.css";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const SERIES_ITEMS = [
   "Airbag",
@@ -56,6 +59,7 @@ const INITIAL_FORM_DATA = {
 
 export default function AddCar() {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
   const [selectedSeriesItems, setSelectedSeriesItems] = useState(new Set());
@@ -122,29 +126,69 @@ export default function AddCar() {
     navigate("/admin");
   }
 
+  async function uploadImage(file, signatureData) {
+    const { timestamp, signature, folder, apiKey, cloudName } = signatureData;
+
+    const uploadData = new FormData();
+    uploadData.append("file", file);
+    uploadData.append("api_key", apiKey);
+    uploadData.append("timestamp", timestamp);
+    uploadData.append("signature", signature);
+    uploadData.append("folder", folder);
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+      { method: "POST", body: uploadData }
+    );
+
+    if (!res.ok) {
+      throw new Error("Falha ao enviar imagem para o Cloudinary");
+    }
+
+    const data = await res.json();
+    return data.secure_url;
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setSaving(true);
     setError("");
 
-    const payload = {
-      ...formData,
-      itensSerie: Array.from(selectedSeriesItems),
-      informacoesAdicionais: Array.from(selectedAdditionalItems),
-      fotos: photos.map((photo) => photo.file),
-    };
-
     try {
-      // Codigo provisório, depois trocar quando conectar com a API
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      console.log("Veículo a ser cadastrado:", payload);
+      const idToken = await user.getIdToken();
 
-      // Quando a API estiver pronta, troque o bloco acima por:
-      // const response = await fetch("/api/veiculos", {
-      //   method: "POST",
-      //   body: buildFormData(payload),
-      // });
-      // if (!response.ok) throw new Error("Falha ao cadastrar veículo");
+      let images = [];
+      if (photos.length > 0) {
+        const sigRes = await fetch(`${API_URL}/api/upload/signature`, {
+          headers: { Authorization: `Bearer ${idToken}` },
+        });
+        if (!sigRes.ok) {
+          throw new Error("Não foi possível gerar a assinatura de upload");
+        }
+        const signatureData = await sigRes.json();
+
+        images = await Promise.all(
+          photos.map((photo) => uploadImage(photo.file, signatureData))
+        );
+      }
+
+      const carRes = await fetch(`${API_URL}/api/cars`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          ...formData,
+          images,
+          itensSerie: Array.from(selectedSeriesItems),
+          informacoesAdicionais: Array.from(selectedAdditionalItems),
+        }),
+      });
+
+      if (!carRes.ok) {
+        throw new Error("Falha ao cadastrar veículo");
+      }
 
       navigate("/admin");
     } catch (err) {

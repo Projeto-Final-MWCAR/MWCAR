@@ -30,19 +30,46 @@ const VALID_STATUS = ["disponivel", "reservado"];
 
 router.post("/", requireAuth, async (req, res) => {
   try {
-    const { model, brand, year, price, images, description, status } = req.body;
-    if (!model || !brand || !year || !price) {
-      return res.status(400).json({ error: "Campos obrigatórios: model, brand, year, price" });
+    const {
+      marca,
+      modelo,
+      ano,
+      preco,
+      images,
+      descricao,
+      status,
+      placa,
+      combustivel,
+      tipoVeiculo,
+      potencia,
+      direcao,
+      cor,
+      aceitaTrocas,
+      itensSerie,
+      informacoesAdicionais,
+    } = req.body;
+
+    if (!marca || !modelo || !ano || !preco) {
+      return res.status(400).json({ error: "Campos obrigatórios: marca, modelo, ano, preco" });
     }
     const now = new Date().toISOString();
     const docRef = await db.collection("cars").add({
-      model,
-      brand,
-      year,
-      price,
+      marca,
+      modelo,
+      ano: Number(ano),
+      preco: Number(preco),
       images: Array.isArray(images) ? images : [],
-      description: description || "",
+      descricao: descricao || "",
       status: VALID_STATUS.includes(status) ? status : "disponivel",
+      placa: placa || "",
+      combustivel: combustivel || "",
+      tipoVeiculo: tipoVeiculo || "",
+      potencia: potencia || "",
+      direcao: direcao || "",
+      cor: cor || "",
+      aceitaTrocas: Boolean(aceitaTrocas),
+      itensSerie: Array.isArray(itensSerie) ? itensSerie : [],
+      informacoesAdicionais: Array.isArray(informacoesAdicionais) ? informacoesAdicionais : [],
       createdAt: now,
       updatedAt: now,
     });

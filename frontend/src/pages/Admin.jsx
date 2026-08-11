@@ -3,14 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useState, useEffect } from "react";
 import "./Admin.css";
 
-const MOCK_VEHICLES = [
-  { id: 1, name: "BMW Série 3 330i", brand: "BMW", year: 2023, price: 289900, status: "reservado", image: "" },
-  { id: 2, name: "Mercedes-Benz C 200", brand: "Mercedes-Benz", year: 2022, price: 315000, status: "disponivel", image: "" },
-  { id: 3, name: "Audi A4 Prestige Plus", brand: "Audi", year: 2023, price: 295000, status: "reservado", image: "" },
-  { id: 4, name: "Volkswagen Tiguan R-Line", brand: "Volkswagen", year: 2023, price: 198900, status: "disponivel", image: "" },
-  { id: 5, name: "Land Rover Defender 110", brand: "Land Rover", year: 2022, price: 520000, status: "disponivel", image: "" },
-  { id: 6, name: "Hyundai Ioniq 5 Limited", brand: "Hyundai", year: 2024, price: 239900, status: "disponivel", image: "" },
-];
+const API_URL = import.meta.env.VITE_API_URL;
 
 function formatPrice(value) {
   return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -39,19 +32,14 @@ export default function Admin() {
     setLoading(true);
     setError("");
     try {
-      // Codigo provisório, depois trocar quando conectar com a API
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      setVehicles(MOCK_VEHICLES);
-
-      //  // Quando a API estiver pronta, troque o bloco acima por:
-      // const response = await fetch("/api/veiculos");
-      // if (!response.ok) throw new Error("Falha ao buscar veículos");
-      // const data = await response.json();
-      // setVehicles(data);
+      const response = await fetch(`${API_URL}/api/cars`);
+      if (!response.ok) throw new Error("Falha ao buscar veículos");
+      const data = await response.json();
+      setVehicles(data);
     } catch (err) {
       setError("Não foi possível carregar os veículos. Verifique sua conexão e tente novamente.");
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   }
 
@@ -63,11 +51,23 @@ export default function Admin() {
     setVehicleToDelete(null);
   }
 
-  function confirmDelete() {
-    setVehicles((prevVehicles) =>
-      prevVehicles.filter((v) => v.id !== vehicleToDelete.id)
-    );
-    setVehicleToDelete(null);
+  async function confirmDelete() {
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch(`${API_URL}/api/cars/${vehicleToDelete.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${idToken}` },
+      });
+      if (!response.ok) throw new Error("Falha ao excluir veículo");
+
+      setVehicles((prevVehicles) =>
+        prevVehicles.filter((v) => v.id !== vehicleToDelete.id)
+      );
+    } catch (err) {
+      setError("Não foi possível excluir o veículo. Tente novamente.");
+    } finally {
+      setVehicleToDelete(null);
+    }
   }
 
   async function handleLogout() {
@@ -79,8 +79,8 @@ export default function Admin() {
     navigate("/admin/cadastrar-carro");
   }
 
-  function handleEditarCarro() {
-    navigate(`/admin/editar-carro/${MOCK_VEHICLES.id}`);
+  function handleEditarCarro(vehicle) {
+    navigate(`/admin/editar-carro/${vehicle.id}`);
   }
 
   return (
@@ -153,13 +153,17 @@ export default function Admin() {
                 <tr key={vehicle.id}>
                   <td>
                     <div className="admin-vehicle-cell">
-                      <div className="admin-vehicle-thumb" />
-                      <span>{vehicle.name}</span>
+                      {vehicle.images?.[0] ? (
+                        <img className="admin-vehicle-thumb" src={vehicle.images[0]} alt={vehicle.modelo} />
+                      ) : (
+                        <div className="admin-vehicle-thumb" />
+                      )}
+                      <span>{vehicle.modelo}</span>
                     </div>
                   </td>
-                  <td className="admin-cell-muted">{vehicle.brand}</td>
-                  <td className="admin-cell-muted">{vehicle.year}</td>
-                  <td className="admin-cell-strong">{formatPrice(vehicle.price)}</td>
+                  <td className="admin-cell-muted">{vehicle.marca}</td>
+                  <td className="admin-cell-muted">{vehicle.ano}</td>
+                  <td className="admin-cell-strong">{formatPrice(vehicle.preco)}</td>
                   <td>
                     <span className={`admin-status admin-status-${vehicle.status}`}>
                       {STATUS_LABELS[vehicle.status]}
@@ -167,7 +171,7 @@ export default function Admin() {
                   </td>
                   <td>
                     <div className="admin-actions">
-                      <button className="admin-btn-edit" onClick={handleEditarCarro}>
+                      <button className="admin-btn-edit" onClick={() => handleEditarCarro(vehicle)}>
                         Editar
                       </button>
                       <button className="admin-btn-delete" onClick={() => openDeleteModal(vehicle)}>
@@ -190,7 +194,7 @@ export default function Admin() {
             <h2 className="modal-title">EXCLUIR VEÍCULO</h2>
             <p className="modal-text">
               Tem certeza que deseja excluir{" "}
-              <strong>{vehicleToDelete.name}</strong>? Esta ação não pode ser
+              <strong>{vehicleToDelete.modelo}</strong>? Esta ação não pode ser
               desfeita.
             </p>
             <div className="modal-actions">

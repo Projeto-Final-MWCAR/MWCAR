@@ -110,13 +110,22 @@ Catálogo de carros da loja, exposto publicamente para leitura (`GET /api/cars`)
 
 | Campo | Tipo | Descrição |
 |---|---|---|
-| `model` | string | Modelo do carro (obrigatório) |
-| `brand` | string | Marca (obrigatório) |
-| `year` | number | Ano do carro (obrigatório) |
-| `price` | number | Preço (obrigatório) |
-| `description` | string | Descrição livre do carro |
+| `marca` | string | Marca (obrigatório) |
+| `modelo` | string | Modelo do carro (obrigatório) |
+| `ano` | number | Ano do carro (obrigatório) |
+| `preco` | number | Preço (obrigatório) |
+| `descricao` | string | Descrição livre do carro |
 | `images` | string[] | URLs das imagens (hospedadas no Cloudinary) |
 | `status` | `"disponivel"` \| `"reservado"` | Situação de venda do carro |
+| `placa` | string | Placa do veículo |
+| `combustivel` | string | Tipo de combustível |
+| `tipoVeiculo` | string | Ex: Sedan, SUV, Hatch |
+| `potencia` | string | Potência do motor |
+| `direcao` | string | Tipo de direção |
+| `cor` | string | Cor do veículo |
+| `aceitaTrocas` | boolean | Se aceita troca por outro veículo |
+| `itensSerie` | string[] | Itens de série selecionados (ex: Airbag, Ar Condicionado) |
+| `informacoesAdicionais` | string[] | Condições adicionais (ex: Único dono, IPVA pago) |
 | `createdAt` | string (ISO 8601) | Data de criação |
 | `updatedAt` | string (ISO 8601) | Data da última edição |
 
