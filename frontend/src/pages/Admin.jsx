@@ -51,7 +51,7 @@ export default function Admin() {
     } catch (err) {
       setError("Não foi possível carregar os veículos. Verifique sua conexão e tente novamente.");
     } finally {
-      setLoading(false);
+      setLoading(false); 
     }
   }
 
@@ -73,6 +73,14 @@ export default function Admin() {
   async function handleLogout() {
     await logout();
     navigate("/login");
+  }
+
+  function handleAddCar() {
+    navigate("/admin/cadastrar-carro");
+  }
+
+  function handleEditarCarro() {
+    navigate(`/admin/editar-carro/${MOCK_VEHICLES.id}`);
   }
 
   return (
@@ -102,7 +110,9 @@ export default function Admin() {
               {loading ? "Carregando..." : `${vehicles.length} veículos cadastrados`}
             </p>
           </div>
-          <button className="admin-add-button">+ ADICIONAR CARRO</button>
+          <button className="admin-add-button" onClick={handleAddCar}>
+            + ADICIONAR CARRO
+          </button>
         </header>
 
         {error && !loading && (
@@ -157,7 +167,9 @@ export default function Admin() {
                   </td>
                   <td>
                     <div className="admin-actions">
-                      <button className="admin-btn-edit">Editar</button>
+                      <button className="admin-btn-edit" onClick={handleEditarCarro}>
+                        Editar
+                      </button>
                       <button className="admin-btn-delete" onClick={() => openDeleteModal(vehicle)}>
                         Excluir
                       </button>

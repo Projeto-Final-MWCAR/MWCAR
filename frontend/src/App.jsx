@@ -3,6 +3,8 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import Admin from "./pages/Admin";
 import Home from "./pages/Home";
+import AddCar from "./pages/AddCar.jsx";
+import EditarCarro from "./pages/EditarCarro.jsx";
 
 export default function App() {
   return (
@@ -17,6 +19,21 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+      <Route 
+        path="/admin/cadastrar-carro" 
+        element={
+          <ProtectedRoute>
+            <AddCar />
+          </ProtectedRoute>}
+      />
+      <Route 
+        path="/admin/editar-carro/:id"
+        element={
+          <ProtectedRoute>
+            <EditarCarro />
+          </ProtectedRoute>
+        }
+      />      
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
