@@ -1,0 +1,150 @@
+.sobre {
+  display: flex;
+  align-items: center;
+  gap: 4rem;
+  padding: 5rem 8%;
+}
+
+.sobre_label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #c93340;
+}
+
+
+.sobre_linha {
+    width: 24px;
+    height: 2px;
+    background-color: #e63946;
+}
+
+.sobre_texto {
+  flex: 1;
+}
+
+.sobre_texto h2 {
+  font-size: 2.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.sobre_paragrafo {
+  color: #4b5563;
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+}
+
+.sobre_divisor {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 2rem 0;
+}
+
+.sobre_lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sobre_lista li {
+  display: flex;
+  flex-direction: column;
+}
+
+.sobre_lista strong {
+  font-size: 1.5rem;
+  color: #e63946;
+  font-weight: 800;
+}
+
+.sobre_lista span {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sobre_imagem_wrapper {
+  flex: 1;
+  position: relative;
+}
+
+.sobre_imagem {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.sobre_card_endereco {
+  position: absolute;
+  bottom: -3px;
+  right: -2px;
+  border-radius: 4px;
+  z-index: 2;
+  background-color: #e63946;
+  color: white;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.sobre_card_endereco strong {
+  font-size: 1.1rem;
+}
+
+.sobre_card_endereco span {
+  font-size: 0.75rem;
+  opacity: 0.9;
+}
+
+
+/* ===== TABLET ===== */
+@media (max-width: 1024px) {
+  .sobre {
+    gap: 2.5rem;
+    padding: 4rem 6%;
+  }
+
+  .sobre_texto h2 {
+    font-size: 2rem;
+  }
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 768px) {
+  .sobre {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2rem;
+    padding: 3rem 6%;
+  }
+
+  .sobre_texto h2 {
+    font-size: 1.75rem;
+  }
+
+  .sobre_lista {
+    gap: 1.5rem;
+  }
+
+  .sobre_card_endereco {
+    padding: 0.75rem 1rem;
+  }
+
+  .sobre_card_endereco strong {
+    font-size: 1rem;
+  }
+}

@@ -16,8 +16,7 @@ export default function Hero() {
         </h2>
 
         <p>
-          Seleção exclusiva de veículos premium com qualidade,
-          transparência e confiança da MWCar.
+          Seleção cuidadosa de veículos com qualidade, transparência e confiança da MWCar.
         </p>
 
         <div className="buttons">

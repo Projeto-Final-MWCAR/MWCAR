@@ -81,6 +81,11 @@
   cursor: pointer;
 }
 
+
+.logo {
+    margin-left: -162px;
+}
+
 @media(max-width:900px) {
 
   .menu-btn {

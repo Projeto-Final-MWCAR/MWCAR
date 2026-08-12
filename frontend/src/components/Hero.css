@@ -6,7 +6,7 @@
         linear-gradient(to right,
             rgba(0, 0, 0, .75),
             rgba(0, 0, 0, .35)),
-        url("/hero.png");
+        url("/Hero_Atualizada.png");
 
     background-size: cover;
     background-position: center;
@@ -23,9 +23,9 @@
     max-width: 1300px;
     width: 100%;
 
-    margin: auto;
+    margin: 110px;
 
-    padding: 0 50px;
+    padding: 10px;
 
     color: white;
 
@@ -54,7 +54,7 @@
 
     font-weight: 800;
 
-    color: #dd7a67;
+    color: #ED2C2B;
 
     text-transform: uppercase;
 
@@ -83,7 +83,7 @@
 
 .btn-primary {
 
-    background: #dd7a67;
+    background: #ED2C2B;
 
     color: white;
 

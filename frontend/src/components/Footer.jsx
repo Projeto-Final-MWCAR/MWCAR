@@ -2,7 +2,7 @@ import "./Footer.css";
 
 export default function Footer() {
     return (
-        <footer className="footer">
+        <footer id="contato" className="footer">
 
             <div className="footer-container">
 
@@ -16,7 +16,7 @@ export default function Footer() {
                     />
 
                     <p className="footer-description">
-                        Sua loja de veículos premium em Fortaleza.
+                         Seleção cuidadosa de veículos.
                         <br />
                         Qualidade, transparência e a melhor experiência de
                         compra do mercado.
@@ -24,13 +24,8 @@ export default function Footer() {
 
                     <div className="footer-social">
 
-                        <a href="#">IG</a>
+                        <a href="https://www.instagram.com/MWCar__/">IG</a>
 
-                        <a href="#">FB</a>
-
-                        <a href="#">WA</a>
-
-                        <a href="#">YT</a>
 
                     </div>
 
@@ -58,13 +53,17 @@ export default function Footer() {
 
                     <h3>Contato</h3>
 
-                    <p>Av. Paulista, 2064 — SP</p>
+                    <p>Av. Gurgel Do Amaral, 1238 — Fortaleza</p>
 
-                    <p>(11) 3456-7890</p>
+                    <p>(85) 99765-0302</p>
 
-                    <p>contato@mwcar.com.br</p>
+                    <p>(85) 99682-4446</p>
 
-                    <p>Seg–Sex: 9h às 18h</p>
+                    <p>mwcar_@hotmail.com</p>
+
+                    <p>Seg–Sex: 8h às 18h / Sábados: 8h às 13h</p>
+
+                    
 
                 </div>
 
@@ -72,9 +71,9 @@ export default function Footer() {
 
             <div className="footer-bottom">
 
-                <p>© 2024 MWCar. Todos os direitos reservados.</p>
+                <p>© 2026 MWCar. Todos os direitos reservados.</p>
 
-                <p>CNPJ: 12.345.678/0001-90 • São Paulo - SP</p>
+                <p>CNPJ: 08.723.859/0001-30 • Fortaleza - CE</p>
 
             </div>
 

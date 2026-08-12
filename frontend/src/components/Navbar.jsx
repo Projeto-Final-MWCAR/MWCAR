@@ -20,6 +20,7 @@ export default function Navbar() {
 
   return (
     <header className={scrolled ? "navbar scrolled" : "navbar"}>
+      
       <div className="container">
 
         <a href="/" className="logo">
