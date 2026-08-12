@@ -2,7 +2,10 @@
   "services": {
     "frontend": {
       "root": "frontend",
-      "outputDirectory": "dist"
+      "outputDirectory": "dist",
+      "rewrites": [
+        { "source": "/(.*)", "destination": "/index.html" }
+      ]
     },
     "backend": {
       "root": "backend",
@@ -16,10 +19,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": {
-        "service": "frontend",
-        "path": "index.html"
-      }
+      "destination": { "service": "frontend" }
     }
   ]
 }
