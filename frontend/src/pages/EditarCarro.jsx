@@ -325,7 +325,7 @@ export default function EditarCarro() {
         )}
 
         <form className="addcar-form" onSubmit={handleSubmit}>
-          <section className="addcar-section">
+          {/* <section className="addcar-section">
             <h2 className="addcar-section-title">BUSCA POR PLACA</h2>
             <div className="addcar-plate-row">
               <input
@@ -345,7 +345,7 @@ export default function EditarCarro() {
                 {searchingPlate ? "BUSCANDO..." : "🔍 BUSCAR"}
               </button>
             </div>
-          </section>
+          </section> */}
 
           <section className="addcar-section">
             <h2 className="addcar-section-title">DADOS DO VEÍCULO</h2>

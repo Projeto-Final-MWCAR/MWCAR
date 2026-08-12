@@ -94,12 +94,9 @@ export default function AddCar() {
     setSearchingPlate(true);
     setError("");
     try {
-      // Codigo provisório, depois trocar quando conectar com a API de consulta de placas
+  
       await new Promise((resolve) => setTimeout(resolve, 800));
-      // const response = await fetch(`/api/placas/${formData.placa}`);
-      // if (!response.ok) throw new Error("Não foi possível consultar a placa");
-      // const data = await response.json();
-      // setFormData((prev) => ({ ...prev, ...data }));
+
     } catch (err) {
       setError("Não foi possível consultar a placa. Preencha os dados manualmente.");
     } finally {
@@ -235,7 +232,7 @@ export default function AddCar() {
         )}
 
         <form className="addcar-form" onSubmit={handleSubmit}>
-          <section className="addcar-section">
+          {/* <section className="addcar-section">
             <h2 className="addcar-section-title">BUSCA POR PLACA</h2>
             <div className="addcar-plate-row">
               <input
@@ -255,7 +252,7 @@ export default function AddCar() {
                 {searchingPlate ? "BUSCANDO..." : "🔍 BUSCAR"}
               </button>
             </div>
-          </section>
+          </section> */}
 
           <section className="addcar-section">
             <h2 className="addcar-section-title">DADOS DO VEÍCULO</h2>
