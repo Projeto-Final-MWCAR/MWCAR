@@ -5,12 +5,14 @@ import Admin from "./pages/Admin";
 import Home from "./pages/Home";
 import AddCar from "./pages/AddCar.jsx";
 import EditarCarro from "./pages/EditarCarro.jsx";
+import AnuncioCarro from "./pages/Anuncio_Carro.jsx";
 
 export default function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/carro/:id" element={<AnuncioCarro />} />
       <Route
         path="/admin"
         element={

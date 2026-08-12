@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { Car as CarIcon, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Car as CarIcon } from "lucide-react";
 import "./CatalogoSection.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -27,6 +28,8 @@ function formatPriceShort(value) {
 }
 
 export default function CatalogoSection() {
+  const navigate = useNavigate();
+
   const [cars, setCars] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -35,8 +38,6 @@ export default function CatalogoSection() {
   const [tipoFilter, setTipoFilter] = useState("todos");
   const [maxPrice, setMaxPrice] = useState(DEFAULT_MAX_PRICE);
   const [priceCeiling, setPriceCeiling] = useState(DEFAULT_MAX_PRICE);
-
-  const [selectedCar, setSelectedCar] = useState(null);
 
   useEffect(() => {
     fetchCars();
@@ -90,11 +91,7 @@ export default function CatalogoSection() {
   }, [cars, marcaFilter, tipoFilter, maxPrice]);
 
   function openDetails(car) {
-    setSelectedCar(car);
-  }
-
-  function closeDetails() {
-    setSelectedCar(null);
+    navigate(`/carro/${car.id}`);
   }
 
   return (
@@ -237,118 +234,6 @@ export default function CatalogoSection() {
           </div>
         )}
       </div>
-
-      {selectedCar && (
-        <div className="catalogo-modal-overlay" onClick={closeDetails}>
-          <div className="catalogo-modal-box" onClick={(e) => e.stopPropagation()}>
-            <button
-              type="button"
-              className="catalogo-modal-close"
-              onClick={closeDetails}
-              aria-label="Fechar"
-            >
-              <X size={20} />
-            </button>
-
-            <div className="catalogo-modal-media">
-              {selectedCar.images?.[0] ? (
-                <img
-                  src={selectedCar.images[0]}
-                  alt={`${selectedCar.marca} ${selectedCar.modelo}`}
-                />
-              ) : (
-                <div className="catalogo-card-placeholder">
-                  <CarIcon size={56} strokeWidth={1.2} />
-                </div>
-              )}
-              <span className={`catalogo-status catalogo-status-${selectedCar.status}`}>
-                {STATUS_LABELS[selectedCar.status] || selectedCar.status}
-              </span>
-            </div>
-
-            <div className="catalogo-modal-content">
-              <span className="catalogo-card-meta">
-                {selectedCar.marca?.toUpperCase()} · {selectedCar.ano}
-              </span>
-              <h2 className="catalogo-modal-title">
-                {selectedCar.marca?.toUpperCase()} {selectedCar.modelo?.toUpperCase()}
-              </h2>
-              <span className="catalogo-modal-price">{formatPrice(selectedCar.preco)}</span>
-
-              {selectedCar.descricao && (
-                <p className="catalogo-modal-desc">{selectedCar.descricao}</p>
-              )}
-
-              <div className="catalogo-modal-specs">
-                {selectedCar.combustivel && (
-                  <div className="catalogo-modal-spec">
-                    <span>Combustível</span>
-                    <strong>{selectedCar.combustivel}</strong>
-                  </div>
-                )}
-                {selectedCar.tipoVeiculo && (
-                  <div className="catalogo-modal-spec">
-                    <span>Tipo</span>
-                    <strong>{selectedCar.tipoVeiculo}</strong>
-                  </div>
-                )}
-                {selectedCar.potencia && (
-                  <div className="catalogo-modal-spec">
-                    <span>Potência</span>
-                    <strong>{selectedCar.potencia}</strong>
-                  </div>
-                )}
-                {selectedCar.direcao && (
-                  <div className="catalogo-modal-spec">
-                    <span>Direção</span>
-                    <strong>{selectedCar.direcao}</strong>
-                  </div>
-                )}
-                {selectedCar.cor && (
-                  <div className="catalogo-modal-spec">
-                    <span>Cor</span>
-                    <strong>{selectedCar.cor}</strong>
-                  </div>
-                )}
-                <div className="catalogo-modal-spec">
-                  <span>Aceita trocas</span>
-                  <strong>{selectedCar.aceitaTrocas ? "Sim" : "Não"}</strong>
-                </div>
-              </div>
-
-              {selectedCar.itensSerie?.length > 0 && (
-                <div className="catalogo-modal-tags-block">
-                  <h4>Itens de série</h4>
-                  <div className="catalogo-modal-tags">
-                    {selectedCar.itensSerie.map((item) => (
-                      <span key={item} className="catalogo-modal-tag">
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {selectedCar.informacoesAdicionais?.length > 0 && (
-                <div className="catalogo-modal-tags-block">
-                  <h4>Informações adicionais</h4>
-                  <div className="catalogo-modal-tags">
-                    {selectedCar.informacoesAdicionais.map((item) => (
-                      <span key={item} className="catalogo-modal-tag">
-                        {item}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <a href="#contato" className="catalogo-modal-cta" onClick={closeDetails}>
-                Tenho interesse
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
