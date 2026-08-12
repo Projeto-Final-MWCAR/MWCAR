@@ -2,124 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Car as CarIcon, X } from "lucide-react";
 import "./CatalogoSection.css";
 
-// const API_URL = import.meta.env.VITE_API_URL;
-
-const MOCK_CARS = [
-  {
-    id: 1,
-    marca: "Chevrolet",
-    modelo: "Onix",
-    ano: 2023,
-    preco: 78900,
-    descricao: "Hatch compacto, econômico e com ótimo custo-benefício para o dia a dia na cidade.",
-    status: "disponivel",
-    combustivel: "Flex",
-    tipoVeiculo: "Hatch",
-    potencia: "116 cv",
-    direcao: "Elétrica",
-    cor: "Prata",
-    aceitaTrocas: true,
-    itensSerie: ["Ar-condicionado", "Vidros elétricos", "Central multimídia"],
-    informacoesAdicionais: ["Único dono", "IPVA pago"],
-    images: ["https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800"],
-    createdAt: "2026-08-01",
-  },
-  {
-    id: 2,
-    marca: "Jeep",
-    modelo: "Compass",
-    ano: 2022,
-    preco: 165000,
-    descricao: "SUV robusto, com bom espaço interno e ótima estabilidade em estrada e cidade.",
-    status: "reservado",
-    combustivel: "Diesel",
-    tipoVeiculo: "SUV",
-    potencia: "170 cv",
-    direcao: "Elétrica",
-    cor: "Preto",
-    aceitaTrocas: false,
-    itensSerie: ["Câmera de ré", "Teto solar", "Bancos em couro"],
-    informacoesAdicionais: ["Revisões em concessionária"],
-    images: ["https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800"],
-    createdAt: "2026-07-20",
-  },
-  {
-    id: 3,
-    marca: "Honda",
-    modelo: "Civic",
-    ano: 2021,
-    preco: 132000,
-    descricao: "Sedã esportivo com excelente acabamento e consumo equilibrado.",
-    status: "disponivel",
-    combustivel: "Flex",
-    tipoVeiculo: "Sedã",
-    potencia: "155 cv",
-    direcao: "Elétrica",
-    cor: "Branco",
-    aceitaTrocas: true,
-    itensSerie: ["Piloto automático", "Sensor de estacionamento"],
-    informacoesAdicionais: [],
-    images: ["https://images.unsplash.com/photo-1590362891991-f776e747a588?w=800"],
-    createdAt: "2026-07-15",
-  },
-  {
-    id: 4,
-    marca: "Toyota",
-    modelo: "Hilux",
-    ano: 2020,
-    preco: 210000,
-    descricao: "Picape robusta, ideal para trabalho pesado e uso off-road.",
-    status: "disponivel",
-    combustivel: "Diesel",
-    tipoVeiculo: "Picape",
-    potencia: "204 cv",
-    direcao: "Hidráulica",
-    cor: "Cinza",
-    aceitaTrocas: true,
-    itensSerie: ["Tração 4x4", "Engate para reboque"],
-    informacoesAdicionais: ["Pneus novos"],
-    images: ["https://images.unsplash.com/photo-1601929387185-e0e2c1b6b5b0?w=800"],
-    createdAt: "2026-06-30",
-  },
-  {
-    id: 5,
-    marca: "Fiat",
-    modelo: "Argo",
-    ano: 2023,
-    preco: 69900,
-    descricao: "Hatch moderno com design arrojado e ótimo espaço para bagagem.",
-    status: "disponivel",
-    combustivel: "Flex",
-    tipoVeiculo: "Hatch",
-    potencia: "109 cv",
-    direcao: "Elétrica",
-    cor: "Vermelho",
-    aceitaTrocas: false,
-    itensSerie: ["Central multimídia", "Ar-condicionado digital"],
-    informacoesAdicionais: ["Garantia de fábrica"],
-    images: [],
-    createdAt: "2026-06-10",
-  },
-  {
-    id: 6,
-    marca: "Volkswagen",
-    modelo: "T-Cross",
-    ano: 2022,
-    preco: 118000,
-    descricao: "SUV compacto com ótimo custo-benefício e tecnologia embarcada.",
-    status: "reservado",
-    combustivel: "Flex",
-    tipoVeiculo: "SUV",
-    potencia: "128 cv",
-    direcao: "Elétrica",
-    cor: "Azul",
-    aceitaTrocas: true,
-    itensSerie: ["Controle de estabilidade", "Câmera 360°"],
-    informacoesAdicionais: ["Segundo dono"],
-    images: ["https://images.unsplash.com/photo-1619682817481-e994891cd1f5?w=800"],
-    createdAt: "2026-05-28",
-  },
-];
+const API_URL = import.meta.env.VITE_API_URL;
 
 const STATUS_LABELS = {
   disponivel: "DISPONÍVEL",
@@ -159,61 +42,33 @@ export default function CatalogoSection() {
     fetchCars();
   }, []);
 
-  // somente para teste, excluir depois
   async function fetchCars() {
-  setLoading(true);
-  setError("");
-  try {
-    // Simula o delay de uma requisição real
-    await new Promise((resolve) => setTimeout(resolve, 400));
+    setLoading(true);
+    setError("");
+    try {
+      const response = await fetch(`${API_URL}/api/cars`);
+      if (!response.ok) throw new Error("Falha ao buscar veículos");
+      const data = await response.json();
 
-    const sorted = [...MOCK_CARS].sort(
-      (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
-    );
+      const sorted = [...data].sort(
+        (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+      );
 
-    setCars(sorted);
+      setCars(sorted);
 
-    const highestPrice = sorted.reduce(
-      (max, car) => Math.max(max, Number(car.preco) || 0),
-      0
-    );
-    const ceiling = Math.max(DEFAULT_MAX_PRICE, Math.ceil(highestPrice / 50000) * 50000);
-    setPriceCeiling(ceiling);
-    setMaxPrice(ceiling);
-  } catch (err) {
-    setError("Não foi possível carregar o catálogo. Verifique sua conexão e tente novamente.");
-  } finally {
-    setLoading(false);
+      const highestPrice = sorted.reduce(
+        (max, car) => Math.max(max, Number(car.preco) || 0),
+        0
+      );
+      const ceiling = Math.max(DEFAULT_MAX_PRICE, Math.ceil(highestPrice / 50000) * 50000);
+      setPriceCeiling(ceiling);
+      setMaxPrice(ceiling);
+    } catch (err) {
+      setError("Não foi possível carregar o catálogo. Verifique sua conexão e tente novamente.");
+    } finally {
+      setLoading(false);
+    }
   }
-}
-
-  // async function fetchCars() {
-  //   setLoading(true);
-  //   setError("");
-  //   try {
-  //     const response = await fetch(`${API_URL}/api/cars`);
-  //     if (!response.ok) throw new Error("Falha ao buscar veículos");
-  //     const data = await response.json();
-
-  //     const sorted = [...data].sort(
-  //       (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
-  //     );
-
-  //     setCars(sorted);
-
-  //     const highestPrice = sorted.reduce(
-  //       (max, car) => Math.max(max, Number(car.preco) || 0),
-  //       0
-  //     );
-  //     const ceiling = Math.max(DEFAULT_MAX_PRICE, Math.ceil(highestPrice / 50000) * 50000);
-  //     setPriceCeiling(ceiling);
-  //     setMaxPrice(ceiling);
-  //   } catch (err) {
-  //     setError("Não foi possível carregar o catálogo. Verifique sua conexão e tente novamente.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // }
 
   const marcas = useMemo(() => {
     const unique = new Set(cars.map((car) => car.marca).filter(Boolean));
