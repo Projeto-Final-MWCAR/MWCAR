@@ -85,10 +85,7 @@ export default function CarDetalhes() {
 
   return (
     <div className="cardetalhes-container">
-      <button onClick={() => navigate(-1)} className="cardetalhes-voltar">
-        <ArrowLeft size={16} />
-        Voltar
-      </button>
+      
 
       <div className="cardetalhes-layout">
         {/* Galeria */}
@@ -148,7 +145,7 @@ export default function CarDetalhes() {
 
           {car.aceitaTrocas && <span className="cardetalhes-tag-trocas">Aceita trocas</span>}
 
-          <a href="#contato" className="cardetalhes-cta">
+          <a href="https://www.instagram.com/MWCar__/" className="cardetalhes-cta">
             Tenho interesse
           </a>
 

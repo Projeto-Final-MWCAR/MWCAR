@@ -1,6 +1,9 @@
 import { MapPin, Phone, Clock, Mail } from "lucide-react";
 import "./Localizacao.css";
 
+const ENDERECO_LOJA = "Av. Gurgel do Amaral, 1238 - Coaçu, Fortaleza - CE, 60871-175";
+const MAPS_DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(ENDERECO_LOJA)}`;
+
 export default function Localizacao (){
 
     return(
@@ -56,8 +59,8 @@ export default function Localizacao (){
                     </div>
                 </div>
                 
-                 <a href="#" className="localizacao_botao">
-                COMO CHEGAR →
+                 <a href={MAPS_DIRECTIONS_URL} target="_blank" rel="noopener noreferrer" className="localizacao_botao">
+                    COMO CHEGAR →
                 </a>
                 </div>
 
