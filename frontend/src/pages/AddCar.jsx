@@ -46,6 +46,7 @@ const INITIAL_FORM_DATA = {
   marca: "",
   modelo: "",
   ano: "",
+  kilometragem: "",
   combustivel: "",
   tipoVeiculo: "",
   potencia: "",
@@ -296,6 +297,21 @@ export default function AddCar() {
                   className="addcar-input"
                   placeholder="Ex: 2023"
                   value={formData.ano}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="addcar-field">
+                <label className="addcar-label" htmlFor="kilometragem">
+                  KILOMETRAGEM
+                </label>
+                <input
+                  id="kilometragem"
+                  name="kilometragem"
+                  type="number"
+                  className="addcar-input"
+                  placeholder="Ex: 45000"
+                  value={formData.kilometragem}
                   onChange={handleInputChange}
                 />
               </div>
