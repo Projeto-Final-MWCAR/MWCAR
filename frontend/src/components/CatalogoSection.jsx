@@ -27,6 +27,11 @@ function formatPriceShort(value) {
   return formatPrice(number);
 }
 
+function formatKm(value) {
+  const number = Number(value) || 0;
+  return `${number.toLocaleString("pt-BR")} Km`;
+}
+
 export default function CatalogoSection() {
   const navigate = useNavigate();
 
@@ -211,7 +216,7 @@ export default function CatalogoSection() {
 
                 <div className="catalogo-card-body">
                   <span className="catalogo-card-meta">
-                    {car.marca?.toUpperCase()} · {car.ano}
+                    {car.marca?.toUpperCase()} · {car.ano} · {formatKm(car.kilometragem)}
                   </span>
                   <h3 className="catalogo-card-title">
                     {car.marca?.toUpperCase()} {car.modelo?.toUpperCase()}

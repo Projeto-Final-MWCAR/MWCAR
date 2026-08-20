@@ -139,7 +139,7 @@ export default function CarDetalhes() {
         {/* Coluna lateral */}
         <aside className="cardetalhes-sidebar">
           <span className="cardetalhes-meta">
-            {car.marca?.toUpperCase()} · {car.ano}
+            {car.marca?.toUpperCase()} · {car.ano} · {Number(car.kilometragem || 0).toLocaleString("pt-BR")} Km
           </span>
           <h1 className="cardetalhes-title">
             {car.marca?.toUpperCase()} {car.modelo?.toUpperCase()}
