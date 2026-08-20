@@ -20,15 +20,13 @@
 .hero-content {
     position: relative;
 
-    max-width: 1300px;
+    max-width: 1400px;
     width: 100%;
 
-    margin: 110px;
-
-    padding: 10px;
+    margin: 0 auto;
+    padding: 110px 30px;
 
     color: white;
-
     z-index: 2;
 }
 
