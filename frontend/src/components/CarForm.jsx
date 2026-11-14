@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../hooks/useAuth";
 import "./CarForm.css";
 
@@ -58,17 +58,68 @@ const INITIAL_FORM_DATA = {
   descricao: "",
 };
 
-export default function CarForm() {
+export default function CarForm({ carId }) {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isEditing = Boolean(carId);
 
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
   const [selectedSeriesItems, setSelectedSeriesItems] = useState(new Set());
   const [selectedAdditionalItems, setSelectedAdditionalItems] = useState(new Set());
   const [photos, setPhotos] = useState([]);
   const [searchingPlate, setSearchingPlate] = useState(false);
+  const [loading, setLoading] = useState(isEditing);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (isEditing) {
+      fetchVehicle();
+    }
+  }, [carId]);
+
+  async function fetchVehicle() {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await fetch(`${API_URL}/api/cars/${carId}`);
+      if (!response.ok) throw new Error("Veículo não encontrado");
+      const vehicle = await response.json();
+
+      setFormData({
+        placa: vehicle.placa ?? "",
+        marca: vehicle.marca ?? "",
+        modelo: vehicle.modelo ?? "",
+        ano: vehicle.ano ?? "",
+        kilometragem: vehicle.kilometragem ?? "",
+        combustivel: vehicle.combustivel ?? "",
+        tipoVeiculo: vehicle.tipoVeiculo ?? "",
+        potencia: vehicle.potencia ?? "",
+        direcao: vehicle.direcao ?? "",
+        cor: vehicle.cor ?? "",
+        preco: vehicle.preco ?? "",
+        status: vehicle.status ?? "disponivel",
+        aceitaTrocas: vehicle.aceitaTrocas ?? false,
+        descricao: vehicle.descricao ?? "",
+      });
+
+      setSelectedSeriesItems(new Set(vehicle.itensSerie ?? []));
+      setSelectedAdditionalItems(new Set(vehicle.informacoesAdicionais ?? []));
+
+      // Fotos que já existiam no cadastro (vêm como URL, não como File)
+      const existingPhotos = (vehicle.images ?? []).map((url) => ({
+        id: url,
+        preview: url,
+        url,
+        isExisting: true,
+      }));
+      setPhotos(existingPhotos);
+    } catch (err) {
+      setError("Não foi possível carregar os dados do veículo.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   function handleInputChange(e) {
     const { name, value, type, checked } = e.target;
@@ -111,6 +162,7 @@ export default function CarForm() {
       file,
       preview: URL.createObjectURL(file),
       id: `${file.name}-${file.lastModified}`,
+      isExisting: false,
     }));
     setPhotos((prev) => [...prev, ...newPhotos]);
     e.target.value = "";
@@ -155,45 +207,67 @@ export default function CarForm() {
     try {
       const idToken = await user.getIdToken();
 
-      let images = [];
-      if (photos.length > 0) {
+      let signatureData = null;
+      if (photos.some((photo) => !photo.isExisting)) {
         const sigRes = await fetch(`${API_URL}/api/upload/signature`, {
           headers: { Authorization: `Bearer ${idToken}` },
         });
         if (!sigRes.ok) {
           throw new Error("Não foi possível gerar a assinatura de upload");
         }
-        const signatureData = await sigRes.json();
-
-        images = await Promise.all(
-          photos.map((photo) => uploadImage(photo.file, signatureData))
-        );
+        signatureData = await sigRes.json();
       }
 
-      const carRes = await fetch(`${API_URL}/api/cars`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({
-          ...formData,
-          images,
-          itensSerie: Array.from(selectedSeriesItems),
-          informacoesAdicionais: Array.from(selectedAdditionalItems),
-        }),
-      });
+      // Mantém a ordem do array: fotos existentes ficam com a URL,
+      // fotos novas são enviadas ao Cloudinary
+      const images = await Promise.all(
+        photos.map((photo) =>
+          photo.isExisting ? photo.url : uploadImage(photo.file, signatureData)
+        )
+      );
+
+      const carRes = await fetch(
+        isEditing ? `${API_URL}/api/cars/${carId}` : `${API_URL}/api/cars`,
+        {
+          method: isEditing ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${idToken}`,
+          },
+          body: JSON.stringify({
+            ...formData,
+            images,
+            itensSerie: Array.from(selectedSeriesItems),
+            informacoesAdicionais: Array.from(selectedAdditionalItems),
+          }),
+        }
+      );
 
       if (!carRes.ok) {
-        throw new Error("Falha ao cadastrar veículo");
+        throw new Error(
+          isEditing ? "Falha ao atualizar veículo" : "Falha ao cadastrar veículo"
+        );
       }
 
       navigate("/admin");
     } catch (err) {
-      setError("Não foi possível cadastrar o veículo. Tente novamente.");
+      setError(
+        isEditing
+          ? "Não foi possível salvar as alterações. Tente novamente."
+          : "Não foi possível cadastrar o veículo. Tente novamente."
+      );
     } finally {
       setSaving(false);
     }
+  }
+
+  if (loading) {
+    return (
+      <div className="admin-spinner-box">
+        <div className="admin-spinner" />
+        <span>Carregando dados do veículo...</span>
+      </div>
+    );
   }
 
   return (
@@ -513,7 +587,11 @@ export default function CarForm() {
             Cancelar
           </button>
           <button type="submit" className="addcar-btn-submit" disabled={saving}>
-            {saving ? "SALVANDO..." : "ADICIONAR VEÍCULO"}
+            {saving
+              ? "SALVANDO..."
+              : isEditing
+              ? "SALVAR ALTERAÇÕES"
+              : "ADICIONAR VEÍCULO"}
           </button>
         </div>
       </form>
